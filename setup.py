@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='PandasSqlWrapper',
+    name='pandas-sql-wrapper',
     description="Tool to help pandas talk to mysql databases.",
     url="https://github.com/Ianphorsman/PandasSqlWrapper",
     author='Ian Horsman',
