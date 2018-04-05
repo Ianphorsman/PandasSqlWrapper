@@ -26,10 +26,10 @@ class PandasSQLWrapper(object):
             cols, table_name, "0, {}".format(limit)
         ), self.con)
 
-    def to_new_table(self, table_name, df, coerce='replace'):
+    def to_new_table(self, table_name, df):
         if self.verbose:
             print("Creating new table {}.".format(table_name))
-        df.to_sql(table_name, self.con, if_exists=coerce)
+        df.to_sql(table_name, self.con, if_exists='fail')
 
     def list_features(self, table_name):
         return pd.read_sql_query("SHOW COLUMNS FROM {}".format(table_name), self.con).Field.values
