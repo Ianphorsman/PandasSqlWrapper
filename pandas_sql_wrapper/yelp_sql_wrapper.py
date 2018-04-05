@@ -22,9 +22,9 @@ class PandasSQLWrapper(object):
 
     def get_table(self, table_name, cols=["*"], limit=1000000):
         cols = ", ".join(cols)
-        return pd.read_sql_query("SELECT {} FROM {} LIMIT {}".format(
+        return self.query("SELECT {} FROM {} LIMIT {}".format(
             cols, table_name, "0, {}".format(limit)
-        ), self.con)
+        ))
 
     def to_new_table(self, table_name, df):
         if self.verbose:
