@@ -32,7 +32,7 @@ class PandasSQLWrapper(object):
         df.to_sql(table_name, self.con, if_exists='fail')
 
     def list_features(self, table_name):
-        return pd.read_sql_query("SHOW COLUMNS FROM {}".format(table_name), self.con).Field.values
+        return self.query("SHOW COLUMNS FROM {}".format(table_name)).Field.values
 
     def remove_table(self, table_name):
         assert table_name in self.all_tables().values.ravel(), "Table with name `{}` does not exist to be removed."\
