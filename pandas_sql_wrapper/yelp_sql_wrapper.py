@@ -18,7 +18,7 @@ class PandasSQLWrapper(object):
         return pd.read_sql_query(statement, self.con)
 
     def all_tables(self):
-        return pd.read_sql_query("SHOW tables", self.con)
+        return self.query("SHOW tables")
 
     def get_table(self, table_name, cols=["*"], limit=1000000):
         cols = ", ".join(cols)
@@ -103,13 +103,6 @@ class PandasSQLWrapper(object):
         if len(unwanted_columns) > 0:
             for feature in unwanted_columns:
                 self.remove_column(table_name, feature)
-
-    def _new_table(self, table_name):
-        assert table_name not in self.all_tables().values.ravel(), "Table with name `{}` already exists."\
-            .format(table_name)
-        if self.verbose:
-            print("Creating table {}.".format(table_name))
-        self.con.execute("CREATE TABLE {}".format(table_name))
 
     def _sql_string(self, cols):
         return "(" + ", ".join(map(str, cols)) + ")"
