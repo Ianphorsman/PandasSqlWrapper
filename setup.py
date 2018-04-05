@@ -7,7 +7,7 @@ setup(
     author='Ian Horsman',
     author_email='ianphorsman@gmail.com',
     license='MIT',
-    version='0.1.3',
+    version='0.1.4',
     packages=['pandas_sql_wrapper'],
     install_requires=['numpy', 'pandas', 'pymysql', 'sqlalchemy']
 )
