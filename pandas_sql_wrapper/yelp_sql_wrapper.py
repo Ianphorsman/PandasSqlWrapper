@@ -132,10 +132,12 @@ class PandasSQLWrapper(object):
                 .format(col_name)
 
     def establish_connection(self, echo=False):
-        return sqlalchemy.create_engine(
+        con = sqlalchemy.create_engine(
             "mysql+pymysql://{}:{}@{}/{}".format(self.user, self.password, self.host, self.db),
             echo=echo
-        ).connect()
+        )
+        con.connect()
+        return con
 
     def configure(self, config):
         if isinstance(config, str):
