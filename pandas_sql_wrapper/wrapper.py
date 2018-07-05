@@ -144,6 +144,3 @@ class PandasSQLWrapper(object):
             with open(config) as file:
                 config = json.load(file)
         return (config['host'], config['db'], config['user'], config['password'])
-
-    def __del__(self):
-        self.con.close()
