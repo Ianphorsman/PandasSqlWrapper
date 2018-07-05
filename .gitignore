@@ -5,6 +5,7 @@ data/
 /dist/
 /*.egg-info
 checkpoint
+.ipynb_checkpoints
 *.index
 *.meta
 sql.json
