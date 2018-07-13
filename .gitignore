@@ -9,3 +9,4 @@ checkpoint
 *.index
 *.meta
 sql.json
+build/
