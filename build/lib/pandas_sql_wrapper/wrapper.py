@@ -10,26 +10,24 @@ from sqlalchemy.sql import text
 
 class PandasSQLWrapper(object):
 
-    def __init__(self, configured_from, postgres=False, verbose=False, echo=False, guidelines=True):
+    def __init__(self, configured_from, postgres=False, verbose=False, echo=False):
         self.host, self.db, self.user, self.password = self.configure(configured_from)
-        self.postgres = postgres
         self.verbose = verbose
-        self.guidelines = guidelines
+        self.postgres = postgres
         self.con = self.establish_connection(postgres=postgres, echo=echo)
-        self.guideline = self.set_guidelines()
 
     def query(self, statement):
         return pd.read_sql_query(statement, self.con)
 
     def all_tables(self):
         if self.postgres:
-            return self.query("SELECT tablename FROM pg_catalog.pg_tables WHERE tableowner = '{}' AND tablename != 'schema_migrations' AND tablename != 'ar_internal_metadata'".format(self.user))
+            return self.query("SELECT * FROM pg_catalog.pg_tables WHERE tableowner = '{}'".format(self.db))
         return self.query("SHOW tables")
 
     def get_table(self, table_name, cols=["*"], limit=1000000):
         cols = ", ".join(cols)
-        return self.query("SELECT {} FROM {} LIMIT {} OFFSET 0".format(
-            cols, table_name, "{}".format(limit)
+        return self.query("SELECT {} FROM {} LIMIT {}".format(
+            cols, table_name, "0, {}".format(limit)
         ))
 
     def to_new_table(self, table_name, df):
@@ -78,15 +76,11 @@ class PandasSQLWrapper(object):
         if self.verbose:
             print("Repopulating table {} rows.".format(table_name))
         if self.postgres:
-            if self.guidelines and self.guideline['postgres_upsert']:
-                print("Ensure that the first column of your dataframe is a unique identifier if updating table fails.")
-                self.guideline['postgres_upsert'] = False
-            update = self._update_string(df.columns[1:])
             self.con.execute(
                 text(
                     """
                     INSERT INTO {} {} VALUES {} ON CONFLICT {} DO UPDATE SET {}
-                    """.format(table_name, cols, symbols, "({})".format(df.columns[0]), update)
+                    """.format(table_name, cols, symbols, symbols, cols)
                 ),
                 self._parameterize_for_sql(df)
             )
@@ -129,9 +123,6 @@ class PandasSQLWrapper(object):
     def _sql_string(self, cols):
         return "(" + ", ".join(map(str, cols)) + ")"
 
-    def _update_string(self, cols):
-        return ", ".join(map(lambda col: "{} = excluded.{}".format(col, col), cols))
-
     def _parameterize_for_sql(self, df):
         cols = df.select_dtypes(include=np.datetime64).columns.values
         records = df.to_dict('records')
@@ -144,8 +135,6 @@ class PandasSQLWrapper(object):
         if col_name in df.select_dtypes(include=[int]):
             return 'INTEGER'
         elif col_name in df.select_dtypes(include=[np.datetime64]):
-            if self.postgres:
-                return 'DATE'
             return 'DATETIME'
         elif col_name in df.select_dtypes(include=[float]):
             return 'FLOAT'
@@ -157,11 +146,6 @@ class PandasSQLWrapper(object):
             assert False, "Cannot resolve sql datatype from dataframe column, `{}`. " \
                           "Use the add_column method to expand table schema manually."\
                 .format(col_name)
-
-    def set_guidelines(self):
-        return {
-            'postgres_upsert': self.guidelines
-        }
 
     def establish_connection(self, postgres=False, echo=False):
         con_string = "mysql+pymysql://{}:{}@{}/{}".format(self.user, self.password, self.host, self.db)
