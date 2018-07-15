@@ -7,7 +7,7 @@
 </h4>
 
 <h4>Installation / Dependencies</h4>
-<p>Dependencies: sqlalchemy, pymysql, pg8000</p>
+<p>Dependencies: pandas, numpy, sqlalchemy, pymysql, pg8000</p>
 
 ```bash
 
