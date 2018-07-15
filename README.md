@@ -7,11 +7,11 @@
 <h4>Installation / Dependencies</h4>
 <p>Dependencies: sqlalchemy, pymysql, pg8000</p>
 
-'''bash
+```bash
 
 pip install pandas-sql-wrapper
 
-'''
+```
 
 <h4>Getting Started</h4>
 <p>
@@ -19,7 +19,7 @@ pip install pandas-sql-wrapper
     Either supply a dict or a string path to a json file as shown below.
 </p>
 
-'''python
+```python
 
 sql_data = PandasSQLWrapper({
     host: '<host name>',
@@ -30,11 +30,11 @@ sql_data = PandasSQLWrapper({
 
 sql_data = PandasSQLWrapper(configured_from='sql_config.json')
 
-'''
+```
 
 <h4>Additional Options</h4>
 
-'''python
+```python
 
 sql_data = PandasSQLWrapper(
     configured_from='sql_config.json',
@@ -43,7 +43,7 @@ sql_data = PandasSQLWrapper(
     echo=False # set to true for sql database to communicate back performed actions
 )
 
-'''
+```
 
 <h4>Update Table</h4>
 <p>
@@ -53,7 +53,7 @@ sql_data = PandasSQLWrapper(
      For mysql, upsert is done using REPLACE INTO. For postgres, upsert is done using INSERT INTO ... ON CONFLICT.
 </p>
 
-'''python
+```python
 
     sql_data.update_table(
         '<table name>',
@@ -61,6 +61,6 @@ sql_data = PandasSQLWrapper(
         permit_deletes=False # set to True if it is ok to delete rows or columns from sql table not found in dataframe
     )
 
-'''
+```
 
 <h4></h4>
