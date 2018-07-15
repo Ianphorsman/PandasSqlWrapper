@@ -27,7 +27,7 @@ sql_data = PandasSQLWrapper({
     host: '<host name>',
     db: '<database name>',
     user: '<database username>',
-    password: '<database password'
+    password: '<database password>'
 })
 
 sql_data = PandasSQLWrapper(configured_from='sql_config.json')
