@@ -63,9 +63,6 @@ class PandasSQLWrapper(object):
             print("Removing column {} from table {}.".format(col_name, table_name))
         self.con.execute("ALTER TABLE {} DROP COLUMN {};".format(table_name, col_name))
 
-    def database_schema(self):
-        return [self.list_features(table_name) for table_name in self.all_tables().Tables_in_yelp_db.values]
-
     def update_table(self, table_name, df, permit_deletes=False):
         self._update_populate_table(table_name, df)
         if permit_deletes:
